@@ -1,117 +1,23 @@
 #!/bin/bash
 
-##########################################################################
-##########################################################################
-#################   nvOC v0019-2.0 - Community Release   #################
-##############        by papampi, Stubo and leenoox         ##############
-##########   Based on the original nvOC v0019-1.4 by fullzero   ##########
-##########################################################################
-##########################################################################
+# Temp control for Cyclenerd/ethereum_nvidia_miner based on TEMP_CONTROL for nvOC v0019-2.0 by leenoox
 
-# TEMP_CONTROL for nvOC v0019-2.0 by leenoox
-#
-# Based on the original code by Maxximus007
-#
-# Changelog:
-# v=0001 : leenoox
-#          Set higher process and disk I/O priorities - Temp control is essential service
-#          Auto detection of number of GPU's
-#          Only set, adjust and display available GPU's, dynamic variables creation
-#          Numeric check of the return values from nvidia-smi (looking for numbers only, anything else = error)
-#          Reboot if GPU error detected and watchdog didn't react for 60 seconds (act as a backup watchdog)
-#          Added query delay to nvidia API (no burst spamming, added 0.5 sec delay, prevent overload), helps reduce stale shares
-#          New (improved) display output including colors and bold text
-#          Fixed the log file handling (Bug fix: Previous implemantation was not limiting the file size)
-#          Removed repetitive GPUFanControlState setting, it only needs to be set once, not every cycle (prevent API overload)
-#          Workaround for some 1050's reporting "Unknown" or "ERR" when power.draw is queried from nvidi-smi
-# v=0002 : Stubo: Added secondary fix for 1050's reporting "[Not Supported]" or "[Unknown Error]" when power.draw is
-#          queried from nvidia-smi (a.k.a. bleed issue of power.draw)
-# v=0003 : Papampi: Telegram alerts
-
-
-# TODO:
-# Telegram implementation # Done
-# Further code optimization
-#
-# DEV_VERSION=0003
-
-nvOC_Ver="nvOC v0019-2.0 - Community Release"
-nvOC_temp_ver="v0019-2.0.003"   # Do not edit this
-
-
-export DISPLAY=:0
-
-echo "Temp Control for $nvOC_Ver"
-echo "Version: :$nvOC_temp_ver"
-echo ""
+echo "Automatic Temp Control"
 
 # Set higher process and disk I/O priorities because we are essential service
 sudo renice -n -15 -p $$ && sudo ionice -c2 -n0 -p$$ >/dev/null 2>&1
 sleep 1
 
-source /home/m1/1bash
-sleep 1
+# Load global settings settings.conf
+if ! source ~/settings.conf; then
+	echo "FAILURE: Cannot load global settings 'settings.conf'"
+	exit 9
+fi
+
+export DISPLAY=:0
 
 NVD=nvidia-settings
 SMI="sudo nvidia-smi"
-
-# Text output beautifier, use bold text and colors
-USE_COLOR="YES"    # YES/NO
-
-if [ $USE_COLOR == "YES" ]; then
-  N='\e[0m'     # Normal
-  B='\e[1m'     # Bold
-  R='\e[31m'    # Red
-  G='\e[32m'    # Green
-  C='\e[36m'    # Cyan
-  Y='\e[33m'    # Yellow
-else
-  N=""
-  B=""
-  R=""
-  G=""
-  C=""
-  Y=""
-fi
-
-# Log file handling (check existance, size limitation or creation, show 10 lines if not empty)
-LOG_FILE="/home/m1/6_autotemplog"
-if [ -e "$LOG_FILE" ]; then
-  LASTLOG=$(tail -n 100 $LOG_FILE)     # Limit the log file, just keep the last 100 entries
-  echo "$LASTLOG" > $LOG_FILE
-  if [[ $(wc -l <$LOG_FILE) -gt 1 ]]; then
-    echo -e "${B}LOG FILE:${N} (Showing the last 10 recorded entries)${R}"
-    cat $LOG_FILE | tail -n 10
-    echo -e "${N}"
-    echo ""
-  else
-    echo -e "${B}LOG FILE${N} is empty."
-    echo ""
-    echo ""
-  fi
-else
-  touch $LOG_FILE     # if log file does not exist, create one
-  echo -e "New ${B}LOG FILE${N} created."
-  echo ""
-  echo ""
-fi
-
-WD_LOG_FILE="/home/m1/5_watchdoglog"
-
-
-# Display version info
-echo ""
-for i in {16..21} ; do
-  echo -en "\e[48;5;${i}m "
-done
-echo -en "${B}TEMP_CONTROL $nvOC_temp_ver by leenoox${N}"
-for i in {21..16} ; do
-  echo -en "\e[48;5;${i}m \e[0m"
-done
-echo ""
-echo ""
-sleep 1
-
 
 # Determine the number of available GPU's
 GPUS=$(nvidia-smi -i 0 --query-gpu=count --format=csv,noheader,nounits)
