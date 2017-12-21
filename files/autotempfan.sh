@@ -22,7 +22,7 @@ SMI="sudo nvidia-smi"
 # Determine the number of available GPU's
 GPUS=$(nvidia-smi -i 0 --query-gpu=count --format=csv,noheader,nounits)
 
-echo -e "Detected: ${B}$GPUS${N} GPU's"
+echo -e "Detected: $GPUS GPU's"
 echo ""
 count=0
 
@@ -44,7 +44,7 @@ while [ $count -lt $GPUS ]; do
   fi
 
   # Info - display assigned values per GPU
-  echo -e "${B}GPU $count:${N}  POWER LIMIT: ${B}${POWER_LIMIT[$count]}${N},  TARGET TEMP: ${B}${TARGET_TEMP[$count]}${N}"
+  echo -e "$GPU $count:  POWER LIMIT: ${POWER_LIMIT[$count]},  TARGET TEMP: ${TARGET_TEMP[$count]}"
 
   # Enable fan control
   ${NVD} -a [gpu:${count}]/GPUFanControlState=1 >/dev/null 2>&1
@@ -63,28 +63,12 @@ fi
 
 echo ""
 # Info - display the Global settings
-echo -e "${B}GLOBAL${N}  FAN_ADJUST (%):  ${B}$FAN_ADJUST${N}"
-echo -e "${B}GLOBAL${N}  POWER_ADJUST (W):  ${B}$POWER_ADJUST${N}"
-echo -e "${B}GLOBAL${N}  ALLOWED_TEMP_DIFF (C):  ${B}$ALLOWED_TEMP_DIFF${N}"
-echo -e "${B}GLOBAL${N}  RESTORE_POWER_LIMIT (%):  ${B}$RESTORE_POWER_LIMIT${N}"
-echo -e "${B}GLOBAL${N}  MINIMAL_FAN_SPEED (%):  ${B}$MINIMAL_FAN_SPEED${N}"
+echo -e "$GLOBAL  FAN_ADJUST (%):  $FAN_ADJUST${N}"
+echo -e "$GLOBAL  POWER_ADJUST (W):  $POWER_ADJUST${N}"
+echo -e "$GLOBAL  ALLOWED_TEMP_DIFF (C):  $ALLOWED_TEMP_DIFF${N}"
+echo -e "$GLOBAL  RESTORE_POWER_LIMIT (%):  $RESTORE_POWER_LIMIT${N}"
+echo -e "$GLOBAL  MINIMAL_FAN_SPEED (%):  $MINIMAL_FAN_SPEED${N}"
 echo ""
-
-
-
-# Setting persistance mode on, will keep settings in between sessions
-# fullzero, Papampi, Stubo..., we need to decide if we gonna use Persistane Mode.
-# I am using it for a while and had no problems with it.
-# If we decide to use it, please move this to the top of 3main:
-# sudo nvidia-smi -pm 1
-#
-# Next line to be deleted after being moved to 3main:
-# added for salfter auto switch compatibilty
-if [[  $COIN != *"SALFTER"* ]]
-then
-  sudo nvidia-smi -pm 1 >/dev/null 2>&1
-fi
-
 
 # How often should TEMP_CONTROL check and adjust the fans
 # Allowed value between 15 and 30 seconds (IMO, 20 seconds works well)
@@ -112,6 +96,7 @@ numtest='^[0-9.]+$'
 ERR_TIMER=60
 ERR_TIMER_BRK=$ERR_TIMER
 
+
 # The Main Loop
 while true; do
   GPU=0
@@ -125,7 +110,7 @@ while true; do
       if ! [[ ( $CURRENT_TEMP =~ $numtest ) && ( $CURRENT_FAN =~ $numtest ) && ( $PWRLIMIT =~ $numtest ) ]]; then
         # Non numeric value! Problem detected! Give watchdog 60 seconds to react, if not, assume watchdog froze - we will reboot in 60 sec (backup watchdog function)
         while [ $ERR_TIMER -gt 0 ]; do
-          echo -e "${R}${B}WARNING: $(date) - Problem detected! GPU$GPU is not responding. Will give watchdog $ERR_TIMER seconds to react, if not we will reboot!${N}" | tee -a ${LOG_FILE}
+          echo -e "WARNING: $(date) - Problem detected! GPU$GPU is not responding. Will give watchdog $ERR_TIMER seconds to react, if not we will reboot!" | tee -a ${LOG_FILE}
           if [[ $TELEGRAM_ALERTS == "YES" ]]; then
             bash '/home/m1/telegram'
           fi
@@ -138,7 +123,7 @@ while true; do
             break
           fi
           if [ $ERR_TIMER -le 0 ]; then
-            echo -e "${R}${B}WARNING: $(date) - Problem detected with GPU$GPU. Watchdog didn't react. System will reboot by the TEMP_CONTROL to correct the problem!" | tee -a ${LOG_FILE} ${WD_LOG_FILE}
+            echo -e "WARNING: $(date) - Problem detected with GPU$GPU. Watchdog didn't react. System will reboot by the TEMP_CONTROL to correct the problem!" | tee -a ${LOG_FILE} ${WD_LOG_FILE}
             if [[ $TELEGRAM_ALERTS == "YES" ]]; then
               bash '/home/m1/telegram'
             fi
@@ -215,7 +200,7 @@ while true; do
         if [ ${POWER_LIMIT[${GPU}]} -ne $POWERLIMIT ]; then
           if [ $NEW_FAN_SPEED -lt $RESTORE_POWER_LIMIT ]; then
             NEW_POWER_LIMIT=${POWER_LIMIT[${GPU}]}
-            echo -e "${B}GPU$GPU${N}${C}$(date) - Restoring Power Limit for ${N}${B}GPU$GPU${N}. ${C}Old limit: ${N}${B}$POWERLIMIT${N}${C} New limit: ${N}${B}$NEW_POWER_LIMIT${N}${C} Fan speed: ${N}${B}$NEW_FAN_SPEED${N}"
+            echo -e "GPU$GPU${N}${C}$(date) - Restoring Power Limit for ${N}${B}GPU$GPU${N}. ${C}Old limit: ${N}${B}$POWERLIMIT${N}${C} New limit: ${N}${B}$NEW_POWER_LIMIT${N}${C} Fan speed: ${N}${B}$NEW_FAN_SPEED${N}"
             echo ""
             ${SMI} -i $GPU -pl ${NEW_POWER_LIMIT}
           fi
@@ -224,7 +209,7 @@ while true; do
     fi
 
     if [ "$NEW_FAN_SPEED" -ne "$CURRENT_FAN" ]; then
-      echo -e "${B}GPU $GPU${N}, ${C}$(date) - Adjusting fan from: ${N}${B}$CURRENT_FAN${N} ${C}to: ${N}${B}$NEW_FAN_SPEED${N} ${C}Temp: ${N}${B}$CURRENT_TEMP${N}"
+      echo -e "GPU $GPU, $(date) - Adjusting fan from: $CURRENT_FAN to: $NEW_FAN_SPEED Temp: $CURRENT_TEMP"
       echo ""
       ${NVD} -a [fan:${GPU}]/GPUTargetFanSpeed=${NEW_FAN_SPEED} 2>&1 >/dev/null
     fi
