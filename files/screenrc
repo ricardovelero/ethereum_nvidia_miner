@@ -17,10 +17,11 @@ bindkey "^k" eval "copy" "stuff k"    # enter copy mode and move up one line
 bindkey -m "^[k" stuff ^b             # move up one page
 bindkey -m "^k" stuff k               # move up one line
 
-screen -t top   htop
-screen -t cpu   watch -n 5 "sensors"
-screen -t smi   watch -n 5 "nvidia-smi"
-screen -t gpu   watch -n 5 "nvidia-smi --format=csv --query-gpu=name,power.draw,fan.speed,temperature.gpu,clocks.video,clocks.mem"
+#screen -t top   htop
+#screen -t cpu   watch -n 5 "sensors"
+#screen -t smi   watch -n 5 "nvidia-smi"
+#screen -t gpu   watch -n 5 "nvidia-smi --format=csv --query-gpu=name,power.draw,fan.speed,temperature.gpu,clocks.video,clocks.mem"
+screen -t temp bash "/home/prospector/autotempfan.sh"
 screen -t miner bash "/home/prospector/miner.sh"
 screen          bash
 
