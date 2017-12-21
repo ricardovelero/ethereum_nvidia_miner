@@ -53,22 +53,6 @@ while true; do
   echo "      GPU_COUNT: " $GPU_COUNT
   echo " "
 
-  #If WTM auto switch python cant sync, kill it
-  if [[  $WTM_AUTO_SWITCH  ==  "YES"  ]] || [[ $WTM_PROFIT_CHECK == "YES" ]]
-  then
-    WTM_S_PID=$(ps -ef | grep WTM_SWITCHER | grep -v grep |awk '{print $2}')
-    if  [[ -n $WTM_S_PID ]]
-    then
-      WTM_S_PID_TIME=$(ps -eo pid,etimes | grep $WTM_S_PID | awk  '$2> 30 { print $1}')
-      echo "WTM Switcher Syncing"
-      if  [[ -n "$WTM_S_PID_TIME" ]]
-      then
-        echo "WARNING: $(date) - WTM switcher can't sync, kill it"
-        ps -eo pid,etimes | grep $(pgrep -f WTM_SWITCHER) | awk  '$2> 30 { print $1}'  | xargs kill -9
-      fi
-    fi
-  fi
-
   # Set/increment vars
   NUM_GPU_BLW_THRSHLD=0              # Track how many GPU are below threshold
   REBOOTRESET=$(($REBOOTRESET + 1))
