@@ -185,9 +185,12 @@ while true; do
       if [[ $TELEGRAM_ALERTS == "YES" ]]; then
         bash '/home/m1/telegram'
       fi
-      # Best to restart 1bash - settings might be adjusted already
+      # Best to restart 1bash - settings might be adjusted already [Do we need this kill?]
       target=$(ps -ef | awk '$NF~"miner.sh" {print $2}')
       kill $target
+      
+      # Restar the miner screen
+      screen -t miner bash "/home/prospector/miner.sh"
 
       RESTART=$(($RESTART + 1))
       REBOOTRESET=0
