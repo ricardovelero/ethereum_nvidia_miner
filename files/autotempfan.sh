@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Temp control for Cyclenerd/ethereum_nvidia_miner based on TEMP_CONTROL for nvOC v0019-2.0 by leenoox
+# https://github.com/papampi/nvOC_by_fullzero_Community_Release/blob/19.2/6tempcontrol
 
 echo "Automatic Temp Control"
 
