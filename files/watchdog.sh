@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Watchdog for Cyclenerd/ethereum_nvidia_miner based on nvOC v0019-2.0 - Community Release by papampi, Stubo and leenoox 
+# Watchdog for Cyclenerd/ethereum_nvidia_miner based on nvOC v0019-2.0 - Community Release by papampi, Stubo and leenoox
+# https://github.com/papampi/nvOC_by_fullzero_Community_Release/blob/19.2/5watchdog
 
 echo "Watchdog"
 
