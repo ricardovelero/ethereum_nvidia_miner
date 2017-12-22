@@ -144,7 +144,7 @@ while true; do
     done
 
     # Look for no miner screen and get right to miner restart
-    if [[ $(screen -ls |grep miner |wc -l) -eq 0 ]]
+    if [[ $(ps ax | grep miner.sh | wc -l) -eq 0 ]]
     then
       COUNT=0
       echo "WARNING: $(date) - Found no miner, jumping to 3main restart"
@@ -164,7 +164,7 @@ while true; do
       echo "WARNING: $(date) - Problem found: See diagnostics below: " | tee -a ${LOG_FILE}
       echo "Percent of GPUs bellow threshold: $PCT_GPU_BAD %"  | tee -a ${LOG_FILE}
       echo "$(nvidia-smi --query-gpu=name,pstate,temperature.gpu,fan.speed,utilization.gpu,power.draw,power.limit --format=csv)" | tee -a ${LOG_FILE}
-      echo "$(tail -15 /home/m1/nvoc_logs/screenlog.0)" | tee -a ${LOG_FILE}
+      #echo "$(tail -15 /home/m1/nvoc_logs/screenlog.0)" | tee -a ${LOG_FILE}
 
 
       # If we have had 4 miner restarts and still have low utilization
@@ -180,7 +180,7 @@ while true; do
       fi
 
       # Kill the miner to be sure it's gone
-      pkill -e miner
+      pkill -e miner.sh
       echo "CRITICAL: $(date) - GPU Utilization is too low: restarting 3main..." | tee -a ${LOG_FILE}
       if [[ $TELEGRAM_ALERTS == "YES" ]]; then
         bash '/home/m1/telegram'
