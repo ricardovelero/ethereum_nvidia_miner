@@ -130,10 +130,10 @@ while true; do
         echo "$(date) - Internet was down, Now it's ok" | tee -a ${LOG_FILE}
         REBOOTRESET=0; RESTART=0; COUNT=$((6 * $GPU_COUNT))
         #### Now that internet comes up check and restart miner if needed, no need to restart 3main, problem was the internet.
-        if [[ -z $(ps ax | grep -i screen | grep miner) ]]
+        if [[ -z $(ps ax | grep -i miner.sh) ]]
         then
           echo "$(date) - miner is not running, start miner"
-          bash /home/m1/0miner
+          bash /home/prospector/miner.sh
           #wait for miner to start hashing
           sleep $SLEEP_TIME
         else
@@ -186,7 +186,7 @@ while true; do
         bash '/home/m1/telegram'
       fi
       # Best to restart 1bash - settings might be adjusted already
-      target=$(ps -ef | awk '$NF~"3main" {print $2}')
+      target=$(ps -ef | awk '$NF~"miner.sh" {print $2}')
       kill $target
 
       RESTART=$(($RESTART + 1))
