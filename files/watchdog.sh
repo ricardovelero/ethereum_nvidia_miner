@@ -35,7 +35,7 @@ SLEEP_TIME=$((($GPU_COUNT * 10 ) + 10 ))
 numtest='^[0-9.]+$'
 
 # Check if Miner is running
-if [[ -z $(ps ax | grep -i screen | grep miner) ]]
+if [[ -z $(ps ax | grep -i miner.sh) ]]
 then
   echo "WARNING: $(date) - Miner is not running, starting watchdog in 10 seconds to look for problems"
 else
