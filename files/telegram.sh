@@ -41,6 +41,7 @@ $LF GPU_UTILIZATIONS: $GPU_UTILIZATIONS
 $LF TEMPS: $TEMP
 $LF POWERDRAW: $PD
 $LF FAN SPEEDS: $FAN
-$LF $CURRENTLY_MINING"
+$LF $CURRENTLY_MINING
+$LF --------8<-------[ cut here ]--------"
 
 /usr/bin/curl -m 5 -s -X POST --output /dev/null https://api.telegram.org/bot${TELEGRAM_APIKEY}/sendMessage -d "text=${MSG}" -d chat_id=${TELEGRAM_CHATID}
