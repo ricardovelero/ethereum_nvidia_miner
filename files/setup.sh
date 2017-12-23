@@ -122,7 +122,7 @@ Done! Please restart 'setup'.
 function my_update(){
 	clear
 	echo_title "Get Latest Updates"
-	curl -f "https://raw.githubusercontent.com/ricardovelero/ethereum_nvidia_miner/master/files/update.sh" -o ~/update.sh
+	curl -f "https://raw.githubusercontent.com/Cyclenerd/ethereum_nvidia_miner/master/files/update.sh" -o ~/update.sh
 	bash ~/update.sh
 	rm ~/update.sh
 	my_any_key
@@ -135,7 +135,7 @@ function my_update(){
 
 # my_settings_edit()
 
-MY_SETTINGS_EDIT_TITLE="Manual Edit 'settings.conf' (For Experts)"
+MY_SETTINGS_EDIT_TITLE="Manuell Edit 'settings.conf' (For Experts)"
 
 function my_settings_edit(){
 	clear
@@ -147,7 +147,7 @@ function my_settings_edit(){
 
 # my_overclock_edit()
 
-MY_OVERCLOCK_EDIT_TITLE="Manual Edit 'nvidia-overclock.sh' (For Experts)"
+MY_OVERCLOCK_EDIT_TITLE="Manuell Edit 'nvidia-overclock.sh' (For Experts)"
 
 function my_overclock_edit(){
 	clear
@@ -159,7 +159,7 @@ function my_overclock_edit(){
 
 # my_miner_edit()
 
-MY_MINER_EDIT_TITLE="Manual Edit 'miner.sh' (For Experts)"
+MY_MINER_EDIT_TITLE="Manuell Edit 'miner.sh' (For Experts)"
 
 function my_miner_edit(){
 	clear
@@ -455,26 +455,6 @@ function my_keyboard() {
 }
 
 
-# my_telegram_alerts()
-
-MY_TELEGRAM_ALERTS_TITLE="Set Telegram Alerts"
-
-MY_TELEGRAM_ALERTS_MSG_TEXT="
-Setup Telegram alerts 
-"
-function my_telegram_alerts() {
-	# shellcheck source=settings.conf
-	source ~/settings.conf
-	cmd=(dialog --backtitle "$MY_TELEGRAM_ALERTS_TITLE" --inputbox "$MY_TELEGRAM_ALERTS_MSG_TEXT" 14 65 "$TELEGRAM_ALERTS")
-	choices=$("${cmd[@]}" 2>&1 >/dev/tty)
-	if [ "$choices" != "" ]; then
-		TELEGRAM_ALERTS=$choices
-		sed -i.bak '/TELEGRAM_ALERTS/d' ~/settings.conf
-		echo >> ~/settings.conf
-		echo "TELEGRAM_ALERTS='$TELEGRAM_ALERTS'" >> ~/settings.conf
-	fi
-}
-
 # my_console()
 
 MY_CONSOLE_TITLE="Console Setup"
@@ -500,14 +480,12 @@ function my_other(){
 	while true; do
 		cmd=(dialog --backtitle "$MY_OTHER_TITLE" --menu "$MY_OTHER_MENU_TITLE" 22 76 16)
 		options=(1 "$MY_KEYBOARD_TITLE"
-		         2 "$MY_CONSOLE_TITLE"
-			 3 "$MY_TELEGRAM_ALERTS_TITLE)
+		         2 "$MY_CONSOLE_TITLE")
 		choice=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 		if [ "$choice" != "" ]; then
 			case $choice in
 				1)  my_keyboard ;;
 				2)  my_console ;;
-				3)  my_telegram_alerts ;;
 			esac
 		else
 			break
@@ -603,7 +581,7 @@ if [ -f ~/settings.conf ]; then
 	echo "'settings.conf' found, do not overwrite!"
 else
 	echo "Create 'settings.conf'."
-	curl -f "https://raw.githubusercontent.com/ricardovelero/ethereum_nvidia_miner/master/files/settings.conf "-o ~/settings.conf
+	curl -f "https://raw.githubusercontent.com/Cyclenerd/ethereum_nvidia_miner/master/files/settings.conf "-o ~/settings.conf
 fi
 
 
