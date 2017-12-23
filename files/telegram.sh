@@ -43,4 +43,4 @@ $LF POWERDRAW: $PD
 $LF FAN SPEEDS: $FAN
 $LF $CURRENTLY_MINING"
 
-/usr/bin/curl -m 5 -s -X POST --output /dev/null https://api.telegram.org/bot${APIKEY}/sendMessage -d "text=${MSG}" -d chat_id=${CHATID}
+/usr/bin/curl -m 5 -s -X POST --output /dev/null https://api.telegram.org/bot${TELEGRAM_APIKEY}/sendMessage -d "text=${MSG}" -d chat_id=${TELEGRAM_CHATID}
