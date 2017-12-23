@@ -19,7 +19,7 @@ MINER_UP_TIME=$(ps -p `pgrep miner` -o etime | grep -v ELAPSED)
 
 CURRENTLY_MINING=$(ps aux | grep miner)
 
-GPU_UTILIZATIONS=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits)
+GPU_UTILIZATIONS=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader | tr '\n' '   ')
 
 TEMP=$(/usr/bin/nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
 
