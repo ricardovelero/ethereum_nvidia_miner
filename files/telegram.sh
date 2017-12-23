@@ -31,7 +31,7 @@ FAN=$(/usr/bin/nvidia-smi --query-gpu=fan.speed --format=csv,noheader | tr '\n' 
 
 LF=$'\n'
 
-MSG=" Worker: $WORKERNAME
+MSG=" Worker: $MY_RIG
 Current Hashrate: $CURRENTHASH
 System Boot Time: $SYSTEM_BOOT_TIME
 System Up Time: $SYSTEM_UP_TIME
