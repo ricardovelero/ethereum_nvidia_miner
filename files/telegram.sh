@@ -1,4 +1,13 @@
+#!/usr/bin/env bash
 
+#
+# telegram.sh
+
+# Load global settings settings.conf
+if ! source ~/settings.conf; then
+	echo "FAILURE: Can not load global settings 'settings.conf'"
+	exit 9
+fi
 
 SYSTEM_BOOT_TIME=$(uptime -s)
 
@@ -18,7 +27,7 @@ PD=$(/usr/bin/nvidia-smi --query-gpu=power.draw --format=csv,noheader)
 
 FAN=$(/usr/bin/nvidia-smi --query-gpu=fan.speed --format=csv,noheader)
 
-CURRENTHASH=`/usr/bin/curl -s http://localhost:3333 | sed '/Total/!d; /Speed/!d;' | awk '{print $6}' | awk 'NR == 3'`
+#CURRENTHASH=`/usr/bin/curl -s http://localhost:3333 | sed '/Total/!d; /Speed/!d;' | awk '{print $6}' | awk 'NR == 3'`
 
 LF=$'\n'
 
