@@ -13,19 +13,19 @@ SYSTEM_BOOT_TIME=$(uptime -s)
 
 SYSTEM_UP_TIME=$(uptime -p)
 
-GPU_COUNT=$(nvidia-smi -L | tail -n 1| cut -c 5 |awk '{ SUM += $1+1} ; { print SUM }')
+GPU_COUNT=$(nvidia-smi -i 0 --query-gpu=count --format=csv,noheader,nounits)
 
 MINER_UP_TIME=$(ps -p `pgrep miner` -o etime | grep -v ELAPSED)
 
 CURRENTLY_MINING=$(ps aux | grep ethermine)
 
-GPU_UTILIZATIONS=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader | tr '\n' '   ')
+GPU_UTILIZATIONS=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | tr '\n' '   ')
 
-TEMP=$(/usr/bin/nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader | tr '\n' '   ')
+TEMP=$(/usr/bin/nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits | tr '\n' '   ')
 
-PD=$(/usr/bin/nvidia-smi --query-gpu=power.draw --format=csv,noheader | tr '\n' '   ')
+PD=$(/usr/bin/nvidia-smi --query-gpu=power.draw --format=csv,noheader,nounits | tr '\n' '   ')
 
-FAN=$(/usr/bin/nvidia-smi --query-gpu=fan.speed --format=csv,noheader | tr '\n' '   ')
+FAN=$(/usr/bin/nvidia-smi --query-gpu=fan.speed --format=csv,noheader,nounits | tr '\n' '   ')
 
 #CURRENTHASH="/usr/bin/curl -s http://localhost:3333 | sed '/Total/!d; /Speed/!d;' | awk '{print $6}' | awk 'NR == 3'"
 
