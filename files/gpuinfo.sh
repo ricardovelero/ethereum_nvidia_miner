@@ -12,7 +12,7 @@ do
    # Get vendor id substring
    VENDOR_ID=${ID:6:5}
 
-   # GPU Query, 3842=EVGA, 1462=MSI, 10DE=Nvidia, 19DA=Zotac, 807D=Asus, 1458=Gigabyte
+   # GPU Query, 3842=EVGA, 1462=MSI, 10DE=Nvidia, 19DA=Zotac, 807D=Asus, 1458=Gigabyte, 7377=Colorful
    case $VENDOR_ID in
       3842) VENDOR_ID="EVGA";;
       1462) VENDOR_ID="MSI";;
