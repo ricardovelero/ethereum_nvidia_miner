@@ -22,6 +22,7 @@ do
       1458) VENDOR_ID="GIGABYTE";;
       196E) VENDOR_ID="PNY";;
       1569) VENDOR_ID="PALIT";;
+      7377) VENDOR_ID="COLORFUL";;
    esac
 
    # Get most GPU info here
